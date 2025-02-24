@@ -139,21 +139,21 @@
 
 
 
-<!--			<plugin>-->
-<!--				<groupId>org.apache.maven.plugins</groupId>-->
-<!--				<artifactId>maven-compiler-plugin</artifactId>-->
-<!--				<configuration>-->
-<!--					<annotationProcessorPaths>-->
-<!--						<path>-->
-<!--							<groupId>org.projectlombok</groupId>-->
-<!--							<artifactId>lombok</artifactId>-->
-<!--						</path>-->
-<!--					</annotationProcessorPaths>-->
-<!--					<source>21</source>-->
-<!--					<target>21</target>-->
-<!--&lt;!&ndash;					<compilerArgs>&#45;&#45;enable-preview</compilerArgs>        ***************************this is wht i commented at last*******************&ndash;&gt;-->
-<!--				</configuration>-->
-<!--			</plugin>-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</path>
+					</annotationProcessorPaths>
+					<source>21</source>
+					<target>21</target>
+<!--					<compilerArgs>&#45;&#45;enable-preview</compilerArgs>        ***************************this is wht i commented at last*******************-->
+				</configuration>
+			</plugin>
 
 <!--			<plugin>-->
 <!--				<groupId>org.springframework.boot</groupId>-->
