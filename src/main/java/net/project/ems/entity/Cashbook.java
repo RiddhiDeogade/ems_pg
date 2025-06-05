@@ -1,35 +1,48 @@
 package net.project.ems.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 import java.util.List;
 
+@Getter
 @Entity
-@Table(name = "cashbooks")
+@Table(name = "cashbook")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // Add this
 public class Cashbook {
 
+    // Getters and Setters
+    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     private String name;
 
     @Column(name = "date_created")
     private LocalDate dateCreated;
 
-    @ManyToOne
+
+    @Setter
     @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     private User user;
 
-    @OneToMany(mappedBy = "cashbook", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @Setter
+    @OneToMany(mappedBy = "cashbook", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("cashbook")  // Ignore circular reference
     private List<Credit> credits;
 
-    @OneToMany(mappedBy = "cashbook" , cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @Setter
+    @OneToMany(mappedBy = "cashbook", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("cashbook")  // Ignore circular reference
     private List<Debit> debits;
 
     // PrePersist method to set the dateCreated to the current date before saving
@@ -40,52 +53,5 @@ public class Cashbook {
         }
     }
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public LocalDate getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(LocalDate dateCreated) {
-        this.dateCreated = dateCreated;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public List<Credit> getCredits() {
-        return credits;
-    }
-
-    public void setCredits(List<Credit> credits) {
-        this.credits = credits;
-    }
-
-    public List<Debit> getDebits() {
-        return debits;
-    }
-
-    public void setDebits(List<Debit> debits) {
-        this.debits = debits;
-    }
 }

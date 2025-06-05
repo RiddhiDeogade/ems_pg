@@ -21,10 +21,9 @@ import java.util.Optional;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping(CashbookController.BASE_PATH)
+@RequestMapping("/api/users")
 public class CashbookController {
 
-    public static final String BASE_PATH = "/api/users";
 
     @Autowired
     private CashbookService cashbookService;
@@ -39,9 +38,12 @@ public class CashbookController {
     private DebitRepository debitRepository;
 
     // Constructor for dependency injection (optional)
+    @Autowired
     public CashbookController(CashbookService cashbookService, UserService userService) {
         this.cashbookService = cashbookService;
         this.userService = userService;
+        this.creditRepository = creditRepository;
+        this.debitRepository = debitRepository;
     }
 
     /**
@@ -78,7 +80,7 @@ public class CashbookController {
             return ResponseEntity.badRequest().body("Credit amount must be greater than zero.");
         }
 
-        Optional<Cashbook> cashbook = cashbookService.getCashbookById(cashbookId);
+        Optional<Cashbook> cashbook = Optional.ofNullable(cashbookService.getCashbookById(cashbookId));
         if (cashbook.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cashbook not found.");
         }
@@ -104,7 +106,7 @@ public class CashbookController {
             return ResponseEntity.badRequest().body("Debit amount must be greater than zero.");
         }
 
-        Optional<Cashbook> cashbook = cashbookService.getCashbookById(cashbookId);
+        Optional<Cashbook> cashbook = Optional.ofNullable(cashbookService.getCashbookById(cashbookId));
         if (cashbook.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cashbook not found.");
         }
@@ -136,13 +138,11 @@ public class CashbookController {
      * Get a Cashbook by ID.
      */
     @GetMapping("/{userId}/cashbooks/{cashbookId}")
-    public ResponseEntity<?> getCashbookById(@PathVariable Long cashbookId) {
-        Optional<Cashbook> cashbook = cashbookService.getCashbookById(cashbookId);
-        if (cashbook.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cashbook not found.");
-        }
-        return ResponseEntity.ok(cashbook.get());
+    public ResponseEntity<CashbookDto> getCashbookById(@PathVariable Long userId, @PathVariable Long cashbookId) {
+        Cashbook cashbook = cashbookService.getCashbookById(cashbookId);
+        return ResponseEntity.ok(new CashbookDto(cashbook));
     }
+
 
     /**
      * Delete a Cashbook by ID.
@@ -165,7 +165,7 @@ public class CashbookController {
             @PathVariable Long cashbookId,
             @RequestBody CashbookDto cashbookDto
     ) {
-        Optional<Cashbook> cashbookOptional = cashbookService.getCashbookById(cashbookId);
+        Optional<Cashbook> cashbookOptional = Optional.ofNullable(cashbookService.getCashbookById(cashbookId));
         if (cashbookOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cashbook not found.");
         }

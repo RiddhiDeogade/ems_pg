@@ -10,13 +10,16 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-    @Repository
+@Repository
 public interface CashbookRepository extends JpaRepository<Cashbook, Long> {
 
     @Query("SELECT c FROM Cashbook c WHERE c.user.id = :userId")
     List<Cashbook> findByUserId(@Param("userId") Long userId);
 
+    @Query("SELECT c FROM Cashbook c WHERE c.id = :cashbookId AND c.user.id = :userId")
+    Optional<Cashbook> findByIdAndUserId(@Param("cashbookId") Long cashbookId, @Param("userId") Long userId);
 
-        Optional<Cashbook> findByIdAndUserId(Long cashbookId, Long userId);
-    }
+    @Query("SELECT c FROM Cashbook c LEFT JOIN FETCH c.credits LEFT JOIN FETCH c.debits WHERE c.user.id = :userId")
+    List<Cashbook> findByUserIdWithCreditsAndDebits(@Param("userId") Long userId);
 
+}
